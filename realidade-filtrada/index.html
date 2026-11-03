@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080d1b">
+<meta name="description" content="Realidade Filtrada — uma experiência educativa sobre algoritmos, bolhas de filtro, inteligência artificial e pensamento crítico.">
+<title>Realidade Filtrada | Você escolhe o que vê?</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap');
+:root{
+ --bg:#080d1b;--bg2:#0d1428;--panel:#111c34;--panel2:#15223e;--line:#263655;
+ --text:#edf3ff;--muted:#a5b2cc;--soft:#7183a5;--cyan:#58e1f2;--blue:#6687ff;
+ --purple:#a58bff;--red:#ff647c;--green:#62e0b4;--gold:#f5c96b;
+ --max:1160px;--radius:22px;--shadow:0 22px 70px #0006;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{margin:0;background:radial-gradient(ellipse at 12% 0%,#17254a 0,transparent 34%),radial-gradient(ellipse at 92% 25%,#21163d 0,transparent 27%),var(--bg);color:var(--text);font-family:Manrope,Arial,sans-serif;line-height:1.72}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.22;background-image:linear-gradient(#8aa4ff0a 1px,transparent 1px),linear-gradient(90deg,#8aa4ff0a 1px,transparent 1px);background-size:48px 48px}
+a{color:inherit;text-decoration:none}.wrap{width:min(var(--max),calc(100% - 42px));margin:auto}
+.topline{height:3px;background:linear-gradient(90deg,var(--cyan),var(--blue),var(--purple),var(--red));position:fixed;top:0;left:0;width:0;z-index:30}
+header{position:sticky;top:0;z-index:20;background:#080d1beF;border-bottom:1px solid #263655;backdrop-filter:blur(18px)}
+.nav{height:76px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:.13em;font-size:12px}
+.brand-mark{width:38px;height:38px;border:1px solid #58e1f2;border-radius:12px;display:grid;place-items:center;color:var(--cyan);box-shadow:0 0 22px #58e1f233;position:relative}
+.brand-mark:before{content:"";width:15px;height:15px;border:2px solid currentColor;border-radius:50%;box-shadow:0 0 0 5px #58e1f21c}
+.brand small{display:block;color:var(--soft);font:9px 'DM Mono',monospace;letter-spacing:.24em;margin-top:2px}
+nav{display:flex;gap:19px;align-items:center}nav a{font:10px 'DM Mono',monospace;letter-spacing:.08em;color:var(--muted);transition:.2s}nav a:hover{color:var(--cyan)}
+#menu{display:none;background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:9px 12px}
+.hero{min-height:680px;display:grid;grid-template-columns:1.05fr .95fr;gap:42px;align-items:center;padding:74px 0 80px;position:relative}
+.kicker{font:11px 'DM Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:var(--cyan)}
+.kicker:before{content:"";display:inline-block;width:24px;height:1px;background:var(--cyan);vertical-align:middle;margin-right:10px}
+h1{font-size:clamp(52px,7.3vw,94px);line-height:.94;letter-spacing:-.075em;margin:22px 0 24px;font-weight:800}
+h1 span{background:linear-gradient(100deg,var(--cyan),#9ca8ff 55%,var(--red));-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:clamp(32px,4.4vw,52px);line-height:1.1;letter-spacing:-.055em;margin:12px 0 18px}
+h3{font-size:20px;line-height:1.3;margin:8px 0 12px}
+p{margin:10px 0;color:var(--muted)}.lead{font-size:18px;max-width:650px;color:#c4d0e8}
+.hero-note{display:flex;gap:12px;align-items:flex-start;margin-top:28px;color:var(--muted);font-size:12px;max-width:530px}
+.pulse{width:8px;height:8px;background:var(--green);border-radius:50%;margin-top:7px;box-shadow:0 0 15px var(--green);flex:none}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:13px 18px;border:1px solid var(--line);border-radius:12px;background:#111c34;color:var(--text);font:700 11px 'DM Mono',monospace;letter-spacing:.06em;cursor:pointer;transition:.2s}
+.btn:hover{transform:translateY(-2px);border-color:var(--cyan);box-shadow:0 8px 26px #58e1f21b}
+.btn.primary{background:linear-gradient(100deg,#3c76df,#6d6af0);border-color:transparent;color:white;box-shadow:0 10px 30px #4668df40}
+.visual{height:440px;position:relative;display:grid;place-items:center;isolation:isolate}
+.visual:before{content:"";position:absolute;width:330px;height:330px;border:1px solid #58e1f24c;border-radius:50%;box-shadow:0 0 70px #5879ff1c,inset 0 0 60px #5879ff14}
+.visual:after{content:"";position:absolute;width:440px;height:180px;border:1px dashed #a58bff70;border-radius:50%;transform:rotate(-32deg)}
+.core{width:190px;height:190px;border-radius:50%;display:grid;place-items:center;z-index:2;background:radial-gradient(circle at 35% 30%,#4e76a9,#15234a 50%,#080d1b 75%);border:1px solid #8fa9ff;box-shadow:0 0 35px #6486ff70,0 0 100px #8b70ff30;position:relative}
+.core:before,.core:after{content:"";position:absolute;border:1px solid #58e1f288;border-radius:50%;inset:18px;transform:rotateX(65deg)}
+.core:after{inset:37px;border-color:#ff647c88;transform:rotateY(65deg)}
+.core span{font:11px 'DM Mono',monospace;letter-spacing:.18em;color:white;text-align:center;z-index:3}
+.orbit{position:absolute;width:490px;height:190px;border:1px solid #6687ff70;border-radius:50%;transform:rotate(55deg);animation:orbit 18s linear infinite}
+.orbit.two{width:490px;height:190px;transform:rotate(-55deg);border-color:#ff647c55;animation-direction:reverse}
+@keyframes orbit{to{rotate:360deg}}
+.float{position:absolute;background:#111c34eF;border:1px solid #34496e;border-radius:12px;padding:10px 13px;box-shadow:var(--shadow);font:10px 'DM Mono',monospace;color:#dce8ff}
+.float b{display:block;color:var(--cyan);font-size:9px;margin-bottom:3px;letter-spacing:.12em}
+.f1{top:34px;left:0}.f2{right:0;top:110px}.f3{bottom:36px;left:5%}.f4{bottom:78px;right:0}
+.hero-bottom{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding-top:23px;color:var(--soft);font:10px 'DM Mono',monospace;letter-spacing:.12em}
+.scroll{color:var(--cyan)}
+section{padding:100px 0;border-top:1px solid #26365580}
+.section-head{max-width:790px;margin-bottom:38px}
+.section-no{font:11px 'DM Mono',monospace;letter-spacing:.18em;color:var(--cyan)}
+.section-head p{font-size:16px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.grid.two{grid-template-columns:repeat(2,1fr)}
+.card,.panel{background:linear-gradient(145deg,#14213b,#0e172c);border:1px solid var(--line);border-radius:var(--radius);padding:25px;box-shadow:0 12px 40px #0002}
+.card{transition:.25s;position:relative;overflow:hidden}
+.card:hover{transform:translateY(-4px);border-color:#5c7cb6;box-shadow:0 18px 50px #0004}
+.card .index{font:11px 'DM Mono',monospace;color:var(--cyan);letter-spacing:.16em}
+.card h3{margin-top:16px}.card p{font-size:14px}
+.card .line{height:2px;width:38px;background:linear-gradient(90deg,var(--cyan),var(--purple));margin:16px 0}
+.callout{border:1px solid #3b527a;background:linear-gradient(110deg,#15294a,#191b3d);border-radius:18px;padding:22px 25px;margin-top:22px}
+.callout strong{color:var(--cyan)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+.label{font:10px 'DM Mono',monospace;color:var(--purple);letter-spacing:.16em;text-transform:uppercase}
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:26px 0}
+.flow-item{padding:18px 14px;background:#101b32;border:1px solid #304364;border-radius:14px;min-height:140px}
+.flow-item .n{font:11px 'DM Mono',monospace;color:var(--cyan)}
+.flow-item b{display:block;margin:12px 0 5px;font-size:14px}
+.flow-item p{font-size:12px;margin:0}
+.flow-item:not(:last-child):after{content:"→";color:var(--cyan);position:relative;left:calc(100% + 4px);top:-86px}
+.term{display:inline-block;padding:3px 8px;border-radius:6px;background:#26345a;color:#c4d5ff;font:11px 'DM Mono',monospace}
+.diagram{background:#0d172b;border:1px solid var(--line);border-radius:20px;padding:25px;margin:25px 0}
+.diagram-title{font:11px 'DM Mono',monospace;letter-spacing:.15em;color:var(--soft);margin-bottom:18px}
+.feedback-loop{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;align-items:center}
+.loop-node{padding:15px 10px;text-align:center;background:#162543;border:1px solid #354c76;border-radius:12px;font-size:12px;font-weight:700}
+.loop-node em{display:block;color:var(--cyan);font:10px 'DM Mono',monospace;font-style:normal;margin-bottom:7px}
+.loop-arrow{text-align:center;color:var(--purple);font-size:20px}
+.note{font-size:12px;color:var(--soft)}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.compare .card:first-child{border-top:3px solid var(--cyan)}
+.compare .card:last-child{border-top:3px solid var(--red)}
+ul{padding-left:20px;color:var(--muted)}li{margin:8px 0}
+.scenario{background:#101a30;border:1px solid #34476a;border-radius:20px;padding:25px;margin-top:25px}
+.scenario h3{color:#eaf2ff}
+.steps{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}
+.step-pill{font:10px 'DM Mono',monospace;padding:7px 10px;border:1px solid var(--line);border-radius:30px;color:var(--soft)}
+.step-pill.active{color:var(--cyan);border-color:var(--cyan);background:#58e1f211}
+.choice-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:20px 0}
+.choice{background:#15223d;border:1px solid #34496d;color:var(--text);padding:17px;border-radius:13px;text-align:left;cursor:pointer;font:600 13px Manrope;line-height:1.5}
+.choice:hover,.choice:focus{border-color:var(--cyan);background:#1a2d4e}
+.feedback{padding:16px;border-radius:12px;background:#0b1427;border:1px solid #2a3c5e;color:#c5d2e9;min-height:62px;font-size:13px}
+.simulator{display:grid;grid-template-columns:.8fr 1.2fr;gap:20px}
+.topic-list{display:flex;flex-wrap:wrap;gap:9px;margin:18px 0}
+.topic{padding:10px 13px;border:1px solid #35496d;background:#101b32;border-radius:30px;color:#c6d2e9;cursor:pointer;font:11px 'DM Mono',monospace}
+.topic[aria-pressed=true]{background:#193d50;border-color:var(--cyan);color:var(--cyan)}
+.feed{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.feed-card{padding:17px;border:1px solid #33496d;background:linear-gradient(145deg,#182847,#101a30);border-radius:14px;min-height:140px}
+.feed-card small{font:9px 'DM Mono',monospace;color:var(--cyan);letter-spacing:.12em}
+.feed-card b{display:block;margin:13px 0 7px;font-size:14px}
+.feed-card span{font-size:11px;color:var(--soft)}
+.range{width:100%;accent-color:var(--cyan)}
+.quiz-q{padding:19px 0;border-bottom:1px solid var(--line)}
+.quiz-q p{color:var(--text);font-weight:700}
+.quiz-q label{display:block;margin:8px 0;color:var(--muted);font-size:13px;cursor:pointer}
+.quiz-q input{accent-color:var(--cyan);margin-right:8px}
+.result{display:none;margin-top:18px;padding:20px;border:1px solid #3b6c70;background:#102c35;border-radius:15px}
+.result strong{color:var(--green)}
+.checklist{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.check{padding:17px;border:1px solid var(--line);border-radius:14px;background:#111c34;font-size:13px;color:#c2cee4}
+.check b{color:var(--cyan);font:11px 'DM Mono',monospace;margin-right:8px}
+.source-list{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.source{padding:17px;border:1px solid var(--line);border-radius:13px;background:#101a30}
+.source a{color:var(--cyan);font-weight:700}.source p{font-size:12px;margin-bottom:0}
+footer{padding:45px 0;background:#060a14;border-top:1px solid var(--line)}
+.footer{display:flex;justify-content:space-between;gap:25px;align-items:center;flex-wrap:wrap}
+footer p{font-size:12px}.footer-mark{font:10px 'DM Mono',monospace;color:var(--soft);letter-spacing:.12em}
+.reveal{opacity:0;transform:translateY(18px);transition:.65s}.reveal.visible{opacity:1;transform:none}
+@media(max-width:900px){nav{display:none;position:absolute;top:76px;left:0;right:0;padding:18px 22px;background:#0b1224;border-bottom:1px solid var(--line);flex-direction:column;align-items:flex-start}nav.open{display:flex}#menu{display:block}.hero{grid-template-columns:1fr;padding-top:55px}.visual{height:370px}.hero-bottom{grid-column:auto}.grid{grid-template-columns:repeat(2,1fr)}.flow{grid-template-columns:repeat(2,1fr)}.flow-item:after{display:none!important}.feedback-loop{grid-template-columns:1fr 1fr}.loop-arrow{display:none}.simulator{grid-template-columns:1fr}}
+@media(max-width:600px){.wrap{width:min(100% - 30px,var(--max))}section{padding:72px 0}.hero{min-height:0}.visual{height:310px;transform:scale(.9);margin:-10px -15px}.visual:before{width:250px;height:250px}.orbit{width:360px;height:145px}.orbit.two{width:360px;height:145px}.core{width:145px;height:145px}.float{font-size:8px}.f1{left:2px}.f2{right:0}.grid,.grid.two,.split,.compare,.choice-grid,.checklist,.source-list{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.feedback-loop{grid-template-columns:1fr}.feed{grid-template-columns:1fr}h1{font-size:56px}.hero-bottom{font-size:8px}.lead{font-size:16px}}
+</style>
+
+<style>
+/* VISUAL UPDATE 2 — varied editorial palette */
+:root{--bg:#090b12;--bg2:#11131d;--panel:#171923;--panel2:#202333;--line:#343747;--text:#f2f1f7;--muted:#b8b8c8;--soft:#85899e;--cyan:#63e5e0;--blue:#7797ff;--purple:#b49aff;--red:#ff7188;--green:#7be0ae;--gold:#f4c76c;--orange:#ff9b65}
+body{background:radial-gradient(ellipse at 12% 0%,#25203b 0,transparent 32%),radial-gradient(ellipse at 88% 40%,#20222d 0,transparent 30%),var(--bg)}
+body:before{opacity:.12;background-size:56px 56px}
+section:nth-of-type(2n){background:linear-gradient(180deg,#10121b 0%,#0b0d15 100%)}
+section:nth-of-type(3n){background:linear-gradient(120deg,#111321 0%,#171321 50%,#10141b 100%)}
+.card,.panel{background:linear-gradient(145deg,#1b1e2a,#12151f);border-color:#383b4d}
+.card:nth-child(3n+1){--accent:var(--cyan)}.card:nth-child(3n+2){--accent:var(--purple)}.card:nth-child(3n){--accent:var(--orange)}
+.card .index,.card .label{color:var(--accent,var(--cyan))}
+.card .line{background:linear-gradient(90deg,var(--accent,var(--cyan)),transparent)}
+.callout{background:linear-gradient(110deg,#202235,#1c202b);border-color:#55516d}
+.diagram{background:linear-gradient(145deg,#171a27,#10131d);border-color:#414357}
+.flow-item{background:#1a1d2a;border-color:#414457}
+.loop-node{background:#242338;border-color:#555071}
+.source{background:#191c29;border-color:#3c4051}
+.check{background:#191c29;border-color:#3c4051}
+.quiz-q{border-color:#3b3d4d}
+.visual{filter:saturate(.9)}
+/* Illustrations */
+.illustration{margin:28px 0;padding:18px;border:1px solid #3d4053;border-radius:20px;background:radial-gradient(circle at 50% 40%,#29253c,#151722 70%);overflow:hidden}
+.illustration svg{display:block;width:100%;height:auto;max-height:270px}
+.illustration figcaption{font:10px 'DM Mono',monospace;letter-spacing:.1em;color:#a4a7bb;margin:10px 3px 0}
+.visual-band{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:25px 0}
+.visual-tile{border:1px solid #424558;border-radius:18px;padding:20px;background:#191c28;min-height:190px;position:relative;overflow:hidden}
+.visual-tile svg{width:100%;height:105px;display:block;margin-top:8px}
+.visual-tile.cyan{border-top:3px solid var(--cyan)}.visual-tile.purple{border-top:3px solid var(--purple)}
+.visual-tile.orange{border-top:3px solid var(--orange)}.visual-tile.red{border-top:3px solid var(--red)}
+/* Animated data visualizations */
+.chart-panel{padding:22px;border:1px solid #424558;border-radius:18px;background:#151823;margin:22px 0}
+.chart-bars{height:180px;display:flex;align-items:end;gap:clamp(8px,2vw,20px);padding:16px 10px 0;border-bottom:1px solid #55596b}
+.chart-bar{flex:1;min-width:20px;height:var(--h);border-radius:8px 8px 2px 2px;background:linear-gradient(180deg,var(--c),color-mix(in srgb,var(--c),transparent 55%));transform-origin:bottom;animation:barRise 1.2s cubic-bezier(.2,.8,.2,1) both;animation-delay:var(--delay)}
+.chart-bar span{display:block;transform:translateY(-24px);font:10px 'DM Mono',monospace;color:#d9d9e7;text-align:center}
+.chart-labels{display:flex;gap:clamp(8px,2vw,20px);padding:9px 10px;color:#a6a9ba;font:9px 'DM Mono',monospace}
+.chart-labels span{flex:1;text-align:center}
+@keyframes barRise{from{transform:scaleY(.05);opacity:.3}to{transform:scaleY(1);opacity:1}}
+.chart-line{width:100%;height:auto;display:block}
+.chart-line path.draw{stroke-dasharray:900;stroke-dashoffset:900;animation:drawLine 2.4s ease forwards}
+@keyframes drawLine{to{stroke-dashoffset:0}}
+.float-dot{animation:floatDot 3s ease-in-out infinite alternate}
+@keyframes floatDot{to{transform:translateY(-9px)}}
+.pulse-ring{transform-origin:center;animation:pulseRing 2.5s ease-out infinite}
+@keyframes pulseRing{0%{opacity:.8;transform:scale(.75)}100%{opacity:0;transform:scale(1.35)}}
+/* Step-by-step quiz */
+.quiz-progress{height:6px;background:#353849;border-radius:20px;overflow:hidden;margin:15px 0 24px}
+.quiz-progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--purple),var(--orange));transition:width .35s}
+.quiz-count{font:11px 'DM Mono',monospace;color:var(--cyan);letter-spacing:.13em}
+.quiz-question{font-size:20px;font-weight:800;color:#f3f2fa;margin:14px 0 20px}
+.quiz-option{display:block;width:100%;text-align:left;padding:15px 17px;margin:10px 0;border:1px solid #414558;border-radius:13px;background:#1c1f2d;color:#d9dbea;font:500 13px Manrope;cursor:pointer;transition:.2s}
+.quiz-option:hover:not(:disabled){border-color:var(--cyan);transform:translateX(3px);background:#24283a}
+.quiz-option.correct{border-color:var(--green);background:#18332c;color:#dfffee}
+.quiz-option.wrong{border-color:var(--red);background:#38202b;color:#ffe5ea}
+.quiz-feedback{min-height:65px;padding:15px;border:1px solid #414558;background:#121620;border-radius:12px;color:#c9cbd9;font-size:13px;margin-top:14px}
+.quiz-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:17px}
+.quiz-controls .btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.library-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.download-card{display:flex;flex-direction:column;min-height:235px;border:1px solid #424558;border-radius:18px;padding:22px;background:linear-gradient(145deg,#202131,#151822);position:relative;overflow:hidden}
+.download-card:after{content:"PDF";position:absolute;right:14px;top:9px;font:800 42px Manrope;color:#ffffff0a}
+.download-card .pdf-tag{font:10px 'DM Mono',monospace;letter-spacing:.16em;color:var(--orange)}
+.download-card h3{margin:15px 0 6px}.download-card p{font-size:13px;flex:1}
+.download-card a{align-self:flex-start;color:var(--cyan);font:700 11px 'DM Mono',monospace;border-bottom:1px solid #63e5e077;padding-bottom:4px}
+@media(max-width:650px){.visual-band,.library-grid{grid-template-columns:1fr}.quiz-question{font-size:17px}.quiz-controls{align-items:stretch}.quiz-controls .btn{flex:1}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition:none!important}}
+</style>
+
+</head>
+<body>
+<div class="topline" id="topline"></div>
+<header><div class="wrap nav">
+ <a class="brand" href="#inicio"><span class="brand-mark"></span><span>REALIDADE<small>FILTRADA / LABORATÓRIO DIGITAL</small></span></a>
+ <nav id="nav"><a href="#algoritmos">ALGORITMOS</a><a href="#bolhas">BOLHAS</a><a href="#ia">INTELIGÊNCIA ARTIFICIAL</a><a href="#laboratorio">LABORATÓRIO</a><a href="#pesquisa">PESQUISA</a><a href="#biblioteca">PDFS</a></nav>
+ <button id="menu" aria-label="Abrir menu">MENU</button>
+</div></header>
+<main id="inicio">
+<div class="wrap">
+ <div class="hero">
+  <div>
+   <div class="kicker">Projeto de educação digital</div>
+   <h1>REALIDADE<br><span>FILTRADA.</span></h1>
+   <p class="lead">Você escolhe o que vê ou alguém escolhe por você?</p>
+   <p>Todos os dias, plataformas digitais selecionam, organizam e recomendam milhares de conteúdos. Entender como isso acontece é essencial para perceber o que aparece no nosso feed — e o que pode ficar de fora.</p>
+   <div class="actions"><a class="btn primary" href="#algoritmos">EXPLORAR O PROJETO ↘</a><a class="btn" href="#laboratorio">TESTAR O LABORATÓRIO</a></div>
+   <div class="hero-note"><span class="pulse"></span><span>Uma investigação sobre algoritmos, formação de opiniões, inteligência artificial e autonomia. O objetivo não é demonizar a tecnologia, mas aprender a usá-la com consciência.</span></div>
+  </div>
+  <div class="visual" aria-label="Ilustração abstrata de um sistema digital de recomendação">
+   <div class="orbit"></div><div class="orbit two"></div><div class="core"><span>SEU<br>FEED<br>EM ANÁLISE</span></div>
+   <div class="float f1"><b>01 / DADOS</b>suas interações</div><div class="float f2"><b>02 / SISTEMA</b>padrões previstos</div><div class="float f3"><b>03 / ESCOLHAS</b>o que ganha destaque</div><div class="float f4"><b>04 / EFEITO</b>novas interações</div>
+  </div>
+  <div class="hero-bottom"><span>ALGORITMOS • ATENÇÃO • INFORMAÇÃO • SOCIEDADE</span><span class="scroll">ROLE PARA INVESTIGAR ↓</span></div>
+ </div>
+</div>
+
+<section id="algoritmos"><div class="wrap">
+ <div class="section-head reveal"><div class="section-no">01 / POR TRÁS DA TELA</div><h2>O que um algoritmo realmente faz?</h2><p>Um algoritmo é uma sequência de instruções usada para resolver um problema ou executar uma tarefa. Nas redes sociais, sistemas computacionais analisam sinais de comportamento para decidir quais publicações podem ser mais relevantes para cada pessoa.</p></div>
+ <div class="grid">
+  <article class="card reveal"><span class="index">01 — COLETA DE SINAIS</span><div class="line"></div><h3>O sistema observa interações</h3><p>Tempo assistindo a um vídeo, curtidas, comentários, compartilhamentos, buscas, contas seguidas e até a decisão de pular uma publicação podem funcionar como sinais. Um sinal isolado não revela tudo sobre alguém: ele é apenas uma pista.</p></article>
+  <article class="card reveal"><span class="index">02 — IDENTIFICAÇÃO DE PADRÕES</span><div class="line"></div><h3>Comportamentos são comparados</h3><p>Modelos procuram relações entre conteúdos e ações. Se muitas pessoas com padrões parecidos assistem a determinado tema, o sistema pode testar recomendações semelhantes para outros usuários.</p></article>
+  <article class="card reveal"><span class="index">03 — CLASSIFICAÇÃO E ORDEM</span><div class="line"></div><h3>O feed ganha uma sequência</h3><p>As publicações não aparecem necessariamente em ordem cronológica. O sistema estima relevância e organiza o que será mostrado primeiro, considerando objetivos e regras definidos pela plataforma.</p></article>
+ </div>
+
+ <div class="visual-band reveal">
+  <div class="visual-tile cyan"><span class="label">SINAL DIGITAL</span><h3>Uma ação vira uma pista</h3>
+   <svg viewBox="0 0 360 105" role="img" aria-label="Ícones abstratos de interação conectados a um sistema"><g fill="none" stroke="#63e5e0" stroke-width="2"><circle cx="45" cy="48" r="22"/><path d="M36 48h18M45 39v18"/><path d="M75 48H130M130 48l-8-7m8 7-8 7"/><rect x="145" y="20" width="70" height="56" rx="10"/><path d="M160 38h40M160 49h29M160 60h34"/><path d="M215 48h55M270 48l-8-7m8 7-8 7"/></g><g fill="#63e5e0"><circle cx="305" cy="48" r="18"/><circle cx="305" cy="48" r="6"/></g><circle class="pulse-ring" cx="305" cy="48" r="28" fill="none" stroke="#63e5e0"/></svg>
+  </div>
+  <div class="visual-tile purple"><span class="label">PADRÃO ENCONTRADO</span><h3>Várias pistas formam uma previsão</h3>
+   <svg viewBox="0 0 360 105" role="img" aria-label="Pontos conectados formando uma rede"><g stroke="#b49aff" stroke-width="1.5" opacity=".8"><path d="M35 25L115 52 190 20 275 55 325 25M35 80L115 52 190 85 275 55 325 82M190 20L190 85"/></g><g fill="#b49aff"><circle class="float-dot" cx="35" cy="25" r="7"/><circle cx="35" cy="80" r="7"/><circle class="float-dot" cx="115" cy="52" r="10"/><circle cx="190" cy="20" r="7"/><circle cx="190" cy="85" r="7"/><circle class="float-dot" cx="275" cy="55" r="10"/><circle cx="325" cy="25" r="7"/><circle cx="325" cy="82" r="7"/></g></svg>
+  </div>
+ </div>
+
+ <div class="diagram reveal"><div class="diagram-title">ESQUEMA SIMPLIFICADO — CICLO DE RECOMENDAÇÃO</div>
+  <div class="flow">
+   <div class="flow-item"><span class="n">ETAPA 01</span><b>Interação</b><p>Você assiste, pesquisa, curte ou ignora.</p></div>
+   <div class="flow-item"><span class="n">ETAPA 02</span><b>Interpretação</b><p>O sistema estima quais temas podem interessar.</p></div>
+   <div class="flow-item"><span class="n">ETAPA 03</span><b>Recomendação</b><p>Alguns conteúdos recebem mais destaque.</p></div>
+   <div class="flow-item"><span class="n">ETAPA 04</span><b>Novo sinal</b><p>Sua reação alimenta novas previsões.</p></div>
+  </div><p class="note">O esquema é didático: cada plataforma usa sistemas próprios, que mudam com o tempo e podem combinar muitos critérios.</p>
+ </div>
+ <div class="split">
+  <div class="card reveal"><span class="label">EXEMPLO COTIDIANO</span><h3>Você assistiu a três vídeos sobre futebol.</h3><p>O sistema pode interpretar que esse assunto desperta seu interesse e recomendar mais vídeos esportivos. Isso pode ser útil: você encontra campeonatos, análises e criadores que talvez não conhecesse.</p></div>
+  <div class="card reveal"><span class="label">O OUTRO LADO</span><h3>Mas o que deixa de aparecer?</h3><p>Se o feed prioriza continuamente temas parecidos, outros assuntos podem receber menos espaço. Você não perde necessariamente o acesso a eles, mas talvez tenha menos oportunidades de encontrá-los sem procurá-los ativamente.</p></div>
+ </div>
+ <div class="callout reveal"><strong>Ideia central:</strong> algoritmo não é sinônimo de manipulação. A recomendação pode facilitar descobertas, organizar excesso de informação e personalizar experiências. A questão crítica é compreender quais critérios orientam a seleção, quais interesses estão envolvidos e quais perspectivas podem ficar menos visíveis.</div>
+</div></section>
+
+<section id="bolhas"><div class="wrap">
+ <div class="section-head reveal"><div class="section-no">02 / QUANDO O FEED SE FECHA</div><h2>Bolhas de filtro e câmaras de eco</h2><p>Os dois conceitos estão relacionados, mas não significam exatamente a mesma coisa. Ambos ajudam a explicar por que podemos encontrar repetidamente ideias parecidas no ambiente digital.</p></div>
+ <div class="compare">
+  <article class="card reveal"><span class="label">BOLHA DE FILTRO</span><h3>O que chega até você é personalizado.</h3><p>É a situação em que mecanismos de seleção e recomendação tendem a destacar conteúdos considerados relevantes para determinado perfil. Como resultado, o usuário pode ter contato reduzido com assuntos ou perspectivas diferentes.</p><div class="line"></div><p><b>Exemplo:</b> depois de pesquisar sobre um tema, uma pessoa passa a receber recomendações quase sempre relacionadas a ele, enquanto outros assuntos aparecem menos.</p></article>
+  <article class="card reveal"><span class="label">CÂMARA DE ECO</span><h3>Ideias semelhantes são repetidas e reforçadas.</h3><p>É um ambiente de comunicação em que opiniões parecidas circulam entre pessoas e grupos, recebem aprovação e são repetidas. A sensação de que “todo mundo pensa assim” pode ficar mais forte, mesmo que a sociedade seja muito mais diversa.</p><div class="line"></div><p><b>Exemplo:</b> em um grupo, publicações que confirmam a opinião dominante são compartilhadas, enquanto discordâncias são ignoradas ou tratadas com hostilidade.</p></article>
+ </div>
+ <div class="diagram reveal"><div class="diagram-title">COMO UM CICLO DE REPETIÇÃO PODE SE FORMAR</div>
+  <div class="feedback-loop">
+   <div class="loop-node"><em>01</em>Interesse inicial</div><div class="loop-arrow">→</div>
+   <div class="loop-node"><em>02</em>Conteúdo semelhante</div><div class="loop-arrow">→</div>
+   <div class="loop-node"><em>03</em>Mais interação</div>
+  </div>
+  <div class="feedback-loop" style="margin-top:10px">
+   <div class="loop-node"><em>04</em>Reforço da recomendação</div><div class="loop-arrow">→</div>
+   <div class="loop-node"><em>05</em>Menor diversidade possível</div><div class="loop-arrow">↺</div>
+   <div class="loop-node"><em>06</em>O ciclo pode continuar</div>
+  </div><p class="note">Modelo ilustrativo, não uma regra inevitável. A experiência varia conforme plataforma, pessoa, assunto e contexto.</p>
+ </div>
+
+ <div class="chart-panel reveal">
+  <div class="diagram-title">MODELO VISUAL — COMO A DIVERSIDADE DO FEED PODE SE ALTERAR</div>
+  <div class="chart-bars" role="img" aria-label="Gráfico conceitual animado comparando diversidade de temas em um feed amplo e em um feed muito personalizado">
+   <div class="chart-bar" style="--h:84%;--c:#63e5e0;--delay:.1s"><span>84%</span></div>
+   <div class="chart-bar" style="--h:62%;--c:#b49aff;--delay:.25s"><span>62%</span></div>
+   <div class="chart-bar" style="--h:38%;--c:#ff9b65;--delay:.4s"><span>38%</span></div>
+   <div class="chart-bar" style="--h:24%;--c:#ff7188;--delay:.55s"><span>24%</span></div>
+  </div>
+  <div class="chart-labels"><span>Feed variado</span><span>Personalização moderada</span><span>Repetição maior</span><span>Exemplo estreito</span></div>
+  <p class="note">Valores ilustrativos, criados apenas para demonstrar uma ideia. Não representam medição real de nenhuma rede social.</p>
+ </div>
+
+ <div class="grid two">
+  <article class="card reveal"><h3>Por que isso importa?</h3><p>Quando uma pessoa encontra repetidamente argumentos semelhantes, pode ficar mais difícil perceber a variedade de evidências, interesses e experiências existentes sobre um assunto. Isso pode aumentar a distância entre grupos e tornar conversas públicas mais tensas.</p></article>
+  <article class="card reveal"><h3>Isso acontece com todo mundo?</h3><p>Não da mesma maneira. Pessoas também procuram notícias, conversam fora das redes, seguem fontes variadas e encontram conteúdos inesperados. As plataformas influenciam a exposição, mas não controlam completamente o pensamento ou as escolhas de ninguém.</p></article>
+ </div>
+ <div class="callout reveal"><strong>Uma distinção importante:</strong> ter interesses específicos não significa estar preso a uma bolha. O risco aparece quando a personalização reduz a diversidade de perspectivas sem que a pessoa perceba — especialmente em temas importantes para a vida coletiva.</div>
+</div></section>
+
+<section id="impactos"><div class="wrap">
+ <div class="section-head reveal"><div class="section-no">03 / CONSEQUÊNCIAS SOCIAIS</div><h2>O que muda quando vemos versões diferentes da realidade?</h2><p>O modo como a informação circula pode afetar conversas, decisões e relações sociais. Os efeitos não são automáticos: dependem do conteúdo, do contexto, das instituições e da forma como cada pessoa interpreta o que recebe.</p></div>
+ <div class="grid">
+  <article class="card reveal"><span class="index">01 / POLARIZAÇÃO</span><h3>Distância entre grupos</h3><p>Quando grupos recebem informações e interpretações muito diferentes, pode ficar mais difícil construir referências comuns. Discordâncias passam a ser vistas como ataques, e não como oportunidades de debate.</p></article>
+  <article class="card reveal"><span class="index">02 / DESINFORMAÇÃO</span><h3>Informações enganosas circulam</h3><p>Conteúdos falsos, manipulados ou sem contexto podem ganhar alcance quando despertam emoções fortes e são compartilhados sem verificação. Popularidade não é prova de verdade.</p></article>
+  <article class="card reveal"><span class="index">03 / VISÃO DE MUNDO</span><h3>O que parece normal ou comum</h3><p>O feed não mostra uma amostra completa da sociedade. Se uma experiência aparece repetidamente, podemos superestimar sua frequência e esquecer realidades que quase não aparecem na nossa tela.</p></article>
+ </div>
+ <div class="grid two" style="margin-top:16px">
+  <article class="card reveal"><h3>Participação cidadã</h3><p>Debates públicos dependem de informação confiável e da capacidade de ouvir argumentos diferentes. Um ambiente informacional fragmentado pode dificultar decisões coletivas, desde escolhas eleitorais até discussões sobre educação, saúde e meio ambiente.</p></article>
+  <article class="card reveal"><h3>Bem-estar e atenção</h3><p>Recomendações contínuas podem estimular longos períodos de uso. Notificações, rolagem infinita e conteúdos emocionalmente intensos disputam atenção. Perceber esses mecanismos ajuda a estabelecer limites e escolhas conscientes.</p></article>
+ </div>
+</div></section>
+
+<section id="ia"><div class="wrap">
+ <div class="section-head reveal"><div class="section-no">04 / INTELIGÊNCIA ARTIFICIAL E CONFIANÇA</div><h2>Quando imagens, vozes e textos podem ser fabricados</h2><p>Ferramentas de inteligência artificial generativa conseguem produzir textos, imagens, áudios e vídeos. Elas podem apoiar a criatividade e o aprendizado, mas também podem ser usadas para criar materiais enganosos ou atribuir a alguém algo que essa pessoa não fez ou disse.</p></div>
+ <div class="grid">
+  <article class="card reveal"><span class="index">01 / DEEPFAKE</span><h3>Uma aparência convincente</h3><p>Deepfakes são mídias sintéticas ou manipuladas que imitam a aparência, a voz ou os movimentos de pessoas. Podem ser usados em sátiras e produções artísticas, mas também para fraude, assédio e desinformação.</p></article>
+  <article class="card reveal"><span class="index">02 / TEXTO SINTÉTICO</span><h3>Uma explicação que parece segura</h3><p>Um texto gerado por IA pode ser fluente e parecer convincente, mas conter erros, fontes inexistentes ou afirmações sem comprovação. A qualidade da escrita não garante a qualidade da informação.</p></article>
+  <article class="card reveal"><span class="index">03 / CONTEXTO</span><h3>Uma imagem real, uma legenda falsa</h3><p>Nem toda desinformação depende de IA. Uma foto antiga, publicada como se fosse atual, ou um vídeo verdadeiro acompanhado de uma legenda enganosa também pode distorcer a compreensão dos fatos.</p></article>
+ </div>
+ <div class="split" style="margin-top:18px">
+  <div class="card reveal"><span class="label">SINAIS PARA INVESTIGAR</span><h3>Desconfie sem tirar conclusões precipitadas.</h3><ul><li>Origem desconhecida ou perfil recém-criado.</li><li>Ausência de data, local ou contexto verificável.</li><li>Áudio ou imagem que não aparece em fontes independentes.</li><li>Pedido urgente de dinheiro, dados ou compartilhamento.</li><li>Manchete muito emocional que não corresponde ao conteúdo.</li></ul></div>
+  <div class="card reveal"><span class="label">O QUE FAZER</span><h3>Verifique antes de concluir.</h3><ul><li>Procure a publicação original e a data.</li><li>Pesquise frases-chave em fontes independentes.</li><li>Compare a informação com veículos reconhecidos e documentos oficiais.</li><li>Em imagens, faça busca reversa para localizar versões anteriores.</li><li>Se não conseguir confirmar, não compartilhe como se fosse fato.</li></ul></div>
+ </div>
+ <div class="callout reveal"><strong>Regra de ouro:</strong> não é possível identificar todo conteúdo falso apenas olhando. A verificação deve considerar origem, contexto, evidências e confirmação independente — não somente a aparência da imagem ou do vídeo.</div>
+</div></section>
+
+<section id="laboratorio"><div class="wrap">
+ <div class="section-head reveal"><div class="section-no">05 / LABORATÓRIO INTERATIVO</div><h2>Como um feed pode mudar?</h2><p>Este experimento educativo mostra como escolhas e interações podem alterar o tipo de conteúdo que recebe destaque. Ele não acessa suas contas, não coleta dados e não reproduz o algoritmo real de nenhuma plataforma.</p></div>
+ <div class="panel reveal">
+  <div class="simulator">
+   <div><span class="label">ETAPA A — ESCOLHA SEUS INTERESSES</span><h3>Quais assuntos você abriria primeiro?</h3><p>Selecione até dois temas. Depois, observe a simulação de um feed que dá mais destaque a eles.</p>
+    <div class="topic-list" id="topics">
+     <button class="topic" data-topic="esportes" aria-pressed="false">ESPORTES</button><button class="topic" data-topic="musica" aria-pressed="false">MÚSICA</button><button class="topic" data-topic="tecnologia" aria-pressed="false">TECNOLOGIA</button><button class="topic" data-topic="moda" aria-pressed="false">MODA</button><button class="topic" data-topic="ambiente" aria-pressed="false">MEIO AMBIENTE</button><button class="topic" data-topic="cultura" aria-pressed="false">CULTURA</button>
+    </div>
+    <p class="note" id="selectionStatus">0 de 2 temas selecionados</p>
+    <button class="btn primary" id="generateFeed">SIMULAR MEU FEED ↗</button><button class="btn" id="resetFeed">REINICIAR</button>
+   </div>
+   <div><span class="label">ETAPA B — OBSERVE A SELEÇÃO</span><h3>Uma amostra do que ganhou destaque</h3>
+    <div class="feed" id="feedPreview"><div class="feed-card"><small>EXEMPLO 01</small><b>Uma reportagem sobre ciência</b><span>Conteúdo variado</span></div><div class="feed-card"><small>EXEMPLO 02</small><b>Uma análise sobre cultura</b><span>Conteúdo variado</span></div><div class="feed-card"><small>EXEMPLO 03</small><b>Uma notícia sobre meio ambiente</b><span>Conteúdo variado</span></div><div class="feed-card"><small>EXEMPLO 04</small><b>Uma perspectiva inesperada</b><span>Conteúdo fora do tema principal</span></div></div>
+   </div>
+  </div>
+  <div class="feedback" id="feedFeedback" aria-live="polite" style="margin-top:20px">Selecione os temas e gere a simulação para observar como a personalização pode mudar a distribuição de conteúdos.</div>
+ </div>
+ <div class="scenario reveal">
+  <span class="label">DESAFIO DE PENSAMENTO CRÍTICO</span><h3>Uma publicação viral afirma que uma nova regra escolar foi aprovada em todo o país.</h3>
+  <p>O post tem milhares de curtidas, mas não apresenta documento, data ou link para uma fonte oficial. Qual seria a atitude mais responsável?</p>
+  <div class="choice-grid">
+   <button class="choice" data-answer="a">A — Compartilhar, porque muitas pessoas já curtiram.</button>
+   <button class="choice" data-answer="b">B — Procurar a origem, verificar a data e comparar com fontes confiáveis.</button>
+   <button class="choice" data-answer="c">C — Rejeitar imediatamente, porque toda publicação viral é falsa.</button>
+   <button class="choice" data-answer="d">D — Acreditar se a publicação confirmar algo que eu já penso.</button>
+  </div>
+  <div class="feedback" id="challengeFeedback" aria-live="polite">Escolha uma alternativa para receber uma explicação.</div>
+ </div>
+</div></section>
+
+<section id="pesquisa"><div class="wrap">
+ <div class="section-head reveal"><div class="section-no">06 / PESQUISA E LEITURA CRÍTICA</div><h2>Como investigar sem cair em conclusões fáceis</h2><p>Uma pesquisa responsável separa opinião, hipótese e evidência. Também pergunta quem produziu o dado, quando foi coletado, quem participou e quais são os limites da informação.</p></div>
+ <div class="grid two">
+  <article class="card reveal"><span class="label">PERGUNTA 01</span><h3>Quem produziu a informação?</h3><p>Identifique autor, instituição, método e possíveis interesses. Uma postagem sem autoria não tem o mesmo peso de um estudo com metodologia transparente.</p></article>
+  <article class="card reveal"><span class="label">PERGUNTA 02</span><h3>O que os dados realmente mostram?</h3><p>Observe tamanho da amostra, período, definição das categorias e margem de incerteza. Uma associação entre dois fenômenos não prova, por si só, que um causou o outro.</p></article>
+  <article class="card reveal"><span class="label">PERGUNTA 03</span><h3>Há outras explicações?</h3><p>Procure interpretações alternativas e evidências que poderiam contrariar a hipótese inicial. Pensamento crítico não é procurar apenas argumentos que confirmem uma opinião.</p></article>
+  <article class="card reveal"><span class="label">PERGUNTA 04</span><h3>Outras fontes confirmam?</h3><p>Compare a informação com documentos originais, pesquisas independentes e veículos com critérios editoriais claros. Repetição da mesma notícia não significa confirmação independente.</p></article>
+ </div>
+ <div class="diagram reveal"><div class="diagram-title">UM ROTEIRO DE CHECAGEM EM CINCO PASSOS</div>
+  <div class="flow">
+   <div class="flow-item"><span class="n">01</span><b>PARE</b><p>Não compartilhe no impulso.</p></div><div class="flow-item"><span class="n">02</span><b>RASTREIE</b><p>Encontre a origem da publicação.</p></div><div class="flow-item"><span class="n">03</span><b>CONTEXTUALIZE</b><p>Confira data, local e situação.</p></div><div class="flow-item"><span class="n">04</span><b>COMPARE</b><p>Busque confirmação independente.</p></div>
+  </div>
+  <p class="note">Passo final: se a evidência continuar insuficiente, reconheça a dúvida. Não compartilhar também é uma decisão responsável.</p>
+ </div>
+ <div class="source-list">
+  <div class="source"><a href="https://cetic.br/" target="_blank" rel="noopener">Cetic.br / CGI.br ↗</a><p>Pesquisas sobre acesso, uso e apropriação das tecnologias digitais no Brasil.</p></div>
+  <div class="source"><a href="https://www.unesco.org/en/media-information-literacy" target="_blank" rel="noopener">UNESCO — Media and Information Literacy ↗</a><p>Materiais sobre alfabetização midiática, informação e pensamento crítico.</p></div>
+  <div class="source"><a href="https://reutersinstitute.politics.ox.ac.uk/digital-news-report" target="_blank" rel="noopener">Reuters Institute — Digital News Report ↗</a><p>Relatórios internacionais sobre consumo de notícias e confiança na informação.</p></div>
+  <div class="source"><a href="https://www.gov.br/secom/pt-br" target="_blank" rel="noopener">Secretaria de Comunicação Social ↗</a><p>Conteúdos e iniciativas públicas relacionadas à comunicação e à informação.</p></div>
+ </div>
+ <p class="note" style="margin-top:18px">Os links são pontos de partida para pesquisa. Consulte a edição, a data e a metodologia de cada publicação antes de utilizar números em trabalhos escolares.</p>
+</div></section>
+
+<section id="biblioteca"><div class="wrap">
+ <div class="section-head reveal"><div class="section-no">07 / BIBLIOTECA DE BOLSO</div><h2>Leve o conhecimento com você.</h2><p>Materiais complementares para consultar, compartilhar e usar em atividades. Cada PDF foi pensado para transformar os conceitos do site em atitudes práticas.</p></div>
+ <div class="library-grid">
+  <article class="download-card reveal"><span class="pdf-tag">GUIA PRÁTICO • PDF</span><h3>Como ampliar seu feed</h3><p>Um guia para reconhecer recomendações repetitivas, diversificar fontes e procurar perspectivas diferentes sem abandonar seus interesses.</p><a href="Guia_Ampliar_o_Feed.pdf" download>BAIXAR GUIA ↗</a></article>
+  <article class="download-card reveal"><span class="pdf-tag">VERIFICAÇÃO • PDF</span><h3>Manual de checagem</h3><p>Checklist para investigar notícias, imagens, vídeos, áudios e conteúdos gerados por inteligência artificial antes de compartilhar.</p><a href="Manual_de_Checagem.pdf" download>BAIXAR MANUAL ↗</a></article>
+  <article class="download-card reveal"><span class="pdf-tag">CONSULTA RÁPIDA • PDF</span><h3>Glossário da realidade digital</h3><p>Definições acessíveis dos principais conceitos do projeto, com exemplos curtos para facilitar a revisão.</p><a href="Glossario_Realidade_Digital.pdf" download>BAIXAR GLOSSÁRIO ↗</a></article>
+  <article class="download-card reveal"><span class="pdf-tag">ATIVIDADES • PDF</span><h3>Caderno de pensamento crítico</h3><p>Situações fictícias e perguntas para analisar evidências, identificar contexto e comparar diferentes pontos de vista.</p><a href="Caderno_Pensamento_Critico.pdf" download>BAIXAR CADERNO ↗</a></article>
+ </div>
+ <p class="note" style="margin-top:16px">Para manter os downloads funcionando, coloque os quatro arquivos PDF na mesma pasta do arquivo HTML antes de publicar o site.</p>
+</div></section>
+
+<section id="quiz"><div class="wrap">
+ <div class="section-head reveal"><div class="section-no">08 / TESTE SEU OLHAR</div><h2>Uma pergunta de cada vez.</h2><p>Responda, veja a explicação e avance. No final, você recebe sua pontuação e pode revisar o gabarito.</p></div>
+ <div class="panel reveal" id="stepQuiz">
+  <div class="quiz-count" id="quizCount">PERGUNTA 1 DE 6</div>
+  <div class="quiz-progress"><span id="quizProgress"></span></div>
+  <div id="quizContent"></div>
+  <div class="quiz-feedback" id="quizFeedback" aria-live="polite">Escolha uma alternativa para descobrir se compreendeu o conceito.</div>
+  <div class="quiz-controls"><button class="btn" id="quizRestart" type="button">RECOMEÇAR</button><button class="btn primary" id="quizNext" type="button" disabled>PRÓXIMA PERGUNTA →</button></div>
+ </div>
+</div></section>
+
+<section id="conclusao"><div class="wrap">
+ <div class="section-head reveal"><div class="section-no">09 / AUTONOMIA DIGITAL</div><h2>Como sair do piloto automático</h2><p>Não é necessário abandonar as redes sociais. O caminho é combinar o uso da tecnologia com hábitos que ampliem a autonomia, a diversidade de informação e a capacidade de avaliar evidências.</p></div>
+ <div class="checklist">
+  <div class="check reveal"><b>01</b> Pesquise ativamente assuntos que não aparecem espontaneamente no seu feed.</div>
+  <div class="check reveal"><b>02</b> Siga fontes com perspectivas diferentes e critérios de qualidade identificáveis.</div>
+  <div class="check reveal"><b>03</b> Antes de compartilhar, confira autoria, data, contexto e evidências.</div>
+  <div class="check reveal"><b>04</b> Diferencie fato verificável, interpretação, opinião e publicidade.</div>
+  <div class="check reveal"><b>05</b> Revise recomendações, histórico e preferências de conteúdo quando a plataforma permitir.</div>
+  <div class="check reveal"><b>06</b> Converse com pessoas que pensam diferente sem abrir mão do respeito e da verificação.</div>
+  <div class="check reveal"><b>07</b> Faça pausas e decida quando e por quanto tempo deseja consumir conteúdo.</div>
+  <div class="check reveal"><b>08</b> Admita quando não sabe. Dúvida bem investigada é melhor que certeza sem evidência.</div>
+ </div>
+ <div class="callout reveal" style="margin-top:28px"><strong>CONCLUSÃO —</strong> Os algoritmos ajudam a organizar o enorme volume de informações que circula na internet, mas suas escolhas de recomendação influenciam aquilo que recebe nossa atenção. Compreender esse processo não significa rejeitar a tecnologia: significa reconhecer seus limites, questionar seus efeitos e preservar nossa capacidade de escolher, comparar e pensar.</div>
+</div></section>
+</main>
+<footer><div class="wrap footer"><div class="brand"><span class="brand-mark"></span><span>REALIDADE<small>FILTRADA / LABORATÓRIO DIGITAL</small></span></div><div><p>Você escolhe o que vê ou alguém escolhe por você?</p><div class="footer-mark">PROJETO EDUCATIVO • ALFABETIZAÇÃO MIDIÁTICA • PENSAMENTO CRÍTICO</div></div><a class="btn" href="#inicio">VOLTAR AO INÍCIO ↑</a></div></footer>
+<script>
+const menu=document.getElementById('menu'),nav=document.getElementById('nav');
+menu.addEventListener('click',()=>nav.classList.toggle('open'));
+nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')));
+const topLine=document.getElementById('topline');
+window.addEventListener('scroll',()=>{const max=document.documentElement.scrollHeight-innerHeight;topLine.style.width=(max>0?scrollY/max*100:0)+'%'},{passive:true});
+const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target)}}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+const chosen=new Set();
+const topicButtons=[...document.querySelectorAll('.topic')];
+const feed=document.getElementById('feedPreview');
+const status=document.getElementById('selectionStatus');
+const feedback=document.getElementById('feedFeedback');
+const examples={
+ esportes:[['ESPORTES','Análise tática de uma partida','Conteúdo relacionado ao tema escolhido'],['ESPORTES','História de uma modalidade pouco conhecida','Outro recorte do mesmo universo']],
+ musica:[['MÚSICA','Novos artistas e estilos musicais','Conteúdo relacionado ao tema escolhido'],['MÚSICA','Como a música expressa identidades culturais','Outro recorte do mesmo universo']],
+ tecnologia:[['TECNOLOGIA','Como funciona uma ferramenta de IA','Conteúdo relacionado ao tema escolhido'],['TECNOLOGIA','Impactos sociais da automação','Outro recorte do mesmo universo']],
+ moda:[['MODA','História e transformação das tendências','Conteúdo relacionado ao tema escolhido'],['MODA','Consumo, produção e sustentabilidade','Outro recorte do mesmo universo']],
+ ambiente:[['MEIO AMBIENTE','Uma descoberta sobre biodiversidade','Conteúdo relacionado ao tema escolhido'],['MEIO AMBIENTE','Soluções para desafios ambientais','Outro recorte do mesmo universo']],
+ cultura:[['CULTURA','Cinema, literatura e manifestações culturais','Conteúdo relacionado ao tema escolhido'],['CULTURA','Como diferentes comunidades contam histórias','Outro recorte do mesmo universo']]
+};
+topicButtons.forEach(button=>button.addEventListener('click',()=>{
+ const key=button.dataset.topic;
+ if(chosen.has(key)){chosen.delete(key);button.setAttribute('aria-pressed','false')}
+ else if(chosen.size<2){chosen.add(key);button.setAttribute('aria-pressed','true')}
+ else{feedback.textContent='Para manter a comparação simples, escolha no máximo dois temas. Você pode retirar uma seleção e escolher outra.';return}
+ status.textContent=chosen.size+' de 2 temas selecionados';
+ feedback.textContent='Seleção atualizada. Clique em “Simular meu feed” para comparar a distribuição de conteúdos.';
+}));
+document.getElementById('generateFeed').addEventListener('click',()=>{
+ if(!chosen.size){feedback.textContent='Escolha pelo menos um assunto antes de gerar a simulação.';return}
+ const cards=[];
+ chosen.forEach(key=>examples[key].forEach(item=>cards.push(item)));
+ cards.push(['PERSPECTIVA DIFERENTE','Uma reportagem sobre um tema que você não selecionou','Um conteúdo que pode receber menos destaque em uma recomendação muito estreita']);
+ cards.push(['DESCOBERTA','Uma pesquisa sobre um assunto novo','Conteúdo inesperado que amplia o repertório']);
+ feed.innerHTML=cards.slice(0,4).map(item=>`<div class="feed-card"><small>${item[0]}</small><b>${item[1]}</b><span>${item[2]}</span></div>`).join('');
+ feedback.textContent='Observe a diferença: os temas escolhidos aparecem com destaque, mas outras perspectivas continuam existindo. Em uma plataforma real, os critérios são muito mais complexos; esta atividade é apenas uma representação didática e não usa dados pessoais.';
+});
+document.getElementById('resetFeed').addEventListener('click',()=>{
+ chosen.clear();topicButtons.forEach(b=>b.setAttribute('aria-pressed','false'));
+ status.textContent='0 de 2 temas selecionados';
+ feed.innerHTML='<div class="feed-card"><small>EXEMPLO 01</small><b>Uma reportagem sobre ciência</b><span>Conteúdo variado</span></div><div class="feed-card"><small>EXEMPLO 02</small><b>Uma análise sobre cultura</b><span>Conteúdo variado</span></div><div class="feed-card"><small>EXEMPLO 03</small><b>Uma notícia sobre meio ambiente</b><span>Conteúdo variado</span></div><div class="feed-card"><small>EXEMPLO 04</small><b>Uma perspectiva inesperada</b><span>Conteúdo fora do tema principal</span></div>';
+ feedback.textContent='Simulação reiniciada. Escolha até dois temas para começar novamente.';
+});
+document.querySelectorAll('[data-answer]').forEach(button=>button.addEventListener('click',()=>{
+ const box=document.getElementById('challengeFeedback');
+ if(button.dataset.answer==='b'){box.innerHTML='<strong>Resposta mais responsável.</strong> A popularidade não comprova uma informação. Procurar a origem, conferir a data e comparar com fontes confiáveis permite avaliar se a afirmação tem evidências.'}
+ else if(button.dataset.answer==='c'){box.innerHTML='<strong>Também é preciso cuidado.</strong> Nem toda publicação viral é falsa. O correto é investigar as evidências, em vez de aceitar ou rejeitar algo apenas pela popularidade.'}
+ else{box.innerHTML='<strong>Essa atitude pode espalhar desinformação.</strong> Curtidas e afinidade com uma opinião não substituem documentos, contexto e confirmação independente.'}
+}));
+const quizItems=[
+ {q:'Qual é uma função comum dos sistemas de recomendação?',o:['Organizar conteúdos com base em sinais e previsões de interesse.','Garantir que todas as pessoas vejam exatamente as mesmas publicações.','Verificar automaticamente se toda informação é verdadeira.'],a:0,e:'Sistemas de recomendação estimam relevância a partir de sinais e padrões. Eles não são verificadores universais da verdade.'},
+ {q:'O que caracteriza uma bolha de filtro?',o:['A ausência completa de internet.','A personalização que pode reduzir a exposição a perspectivas diferentes.','Um grupo que publica apenas fotos.'],a:1,e:'A personalização pode tornar alguns conteúdos mais visíveis e outros menos presentes, embora isso não aconteça da mesma forma com todos.'},
+ {q:'Qual alternativa descreve melhor uma câmara de eco?',o:['Um ambiente em que ideias semelhantes são repetidas e reforçadas.','Um sistema que aumenta o volume do celular.','Uma ferramenta que confirma documentos oficiais.'],a:0,e:'Em uma câmara de eco, opiniões parecidas circulam e recebem reforço, o que pode criar a impressão de que todos pensam da mesma maneira.'},
+ {q:'Curtidas e visualizações comprovam que uma notícia é verdadeira?',o:['Sim, porque popularidade é evidência suficiente.','Não. Popularidade mede circulação ou reação, não comprova os fatos.','Sim, desde que tenha muitos comentários.'],a:1,e:'Engajamento mostra que um conteúdo chamou atenção. Para avaliar sua veracidade, é necessário buscar origem, contexto e evidências.'},
+ {q:'O que é um deepfake?',o:['Uma mídia sintética ou manipulada que imita pessoas ou situações.','Um tipo de senha criptografada.','Uma pesquisa feita em redes sociais.'],a:0,e:'Deepfakes são mídias sintéticas ou manipuladas que podem imitar aparência, voz ou movimentos. A verificação exige contexto e fontes independentes.'},
+ {q:'Qual atitude demonstra pensamento crítico?',o:['Buscar somente informações que confirmem minha opinião.','Comparar fontes, verificar contexto e considerar outras explicações.','Compartilhar rapidamente para ser o primeiro.'],a:1,e:'Pensamento crítico envolve avaliar evidências, comparar fontes e estar disposto a rever uma conclusão.'}
+];
+let quizIndex=0,quizScore=0,quizAnswered=false,quizResponses=[];
+const quizContent=document.getElementById('quizContent'),quizFeedback=document.getElementById('quizFeedback'),quizNext=document.getElementById('quizNext');
+function renderQuiz(){
+ const item=quizItems[quizIndex];quizAnswered=false;
+ document.getElementById('quizCount').textContent=`PERGUNTA ${quizIndex+1} DE ${quizItems.length}`;
+ document.getElementById('quizProgress').style.width=`${(quizIndex/quizItems.length)*100}%`;
+ quizContent.innerHTML=`<div class="quiz-question">${item.q}</div><div>${item.o.map((option,i)=>`<button class="quiz-option" type="button" data-option="${i}">${String.fromCharCode(65+i)} — ${option}</button>`).join('')}</div>`;
+ quizFeedback.textContent='Escolha uma alternativa para receber a explicação.';
+ quizNext.disabled=true;quizNext.textContent=quizIndex===quizItems.length-1?'VER RESULTADO →':'PRÓXIMA PERGUNTA →';
+ quizContent.querySelectorAll('.quiz-option').forEach(button=>button.addEventListener('click',()=>{
+  if(quizAnswered)return;quizAnswered=true;
+  const picked=Number(button.dataset.option),correct=picked===item.a;
+  if(correct)quizScore++;quizResponses[quizIndex]=picked;
+  quizContent.querySelectorAll('.quiz-option').forEach((option,i)=>{option.disabled=true;if(i===item.a)option.classList.add('correct');else if(i===picked)option.classList.add('wrong')});
+  quizFeedback.innerHTML=`<strong>${correct?'Resposta correta.':'Não foi dessa vez.'}</strong> ${item.e}`;
+  quizNext.disabled=false;
+ }));
+}
+quizNext.addEventListener('click',()=>{
+ if(!quizAnswered)return;
+ if(quizIndex<quizItems.length-1){quizIndex++;renderQuiz();return}
+ document.getElementById('quizProgress').style.width='100%';
+ document.getElementById('quizCount').textContent='RESULTADO FINAL';
+ quizContent.innerHTML=`<div class="quiz-question">Você acertou ${quizScore} de ${quizItems.length} perguntas.</div><p>${quizScore===6?'Excelente! Você compreendeu os conceitos centrais.':quizScore>=4?'Muito bom! Revise os temas das respostas que errou.':'Este é um começo. Volte às seções do projeto e tente novamente.'}</p><div class="feedback">Gabarito: 1-A, 2-B, 3-A, 4-B, 5-A, 6-B.</div>`;
+ quizFeedback.textContent='O mais importante não é apenas acertar: é conseguir aplicar essas ideias quando encontrar informações no dia a dia.';
+ quizNext.disabled=true;quizNext.textContent='QUIZ CONCLUÍDO';
+});
+document.getElementById('quizRestart').addEventListener('click',()=>{quizIndex=0;quizScore=0;quizResponses=[];renderQuiz()});
+renderQuiz();
+
+</script>
+</body>
+</html>
